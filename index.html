@@ -1,7 +1,7 @@
 <!doctype html>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#0c0a14" />
+<meta name="theme-color" content="#f8f7fb" id="themeColorMeta" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Incinc CRM" />
@@ -12,26 +12,43 @@
 
 <style>
   :root{
+    --bg:#f8f7fb; --bg2:#fbfaff; --surface:#ffffff; --surface-2:#f1eef8;
+    --line:rgba(24,12,54,.10); --line-soft:rgba(24,12,54,.06);
+    --text:#1c1730; --muted:#6a6383; --muted-2:#9791ab;
+    --b1:#5418c4; --b2:#8a17b3; --b3:#c81e8e;
+    --accent:#a21bca; --accent-2:#c81e8e; --accent-soft:rgba(162,27,202,.12);
+    --grad:linear-gradient(120deg,#5b1ec9 0%,#8e1bb0 48%,#c81e8e 100%);
+    --green:#0e9f6e; --green-soft:rgba(14,159,110,.12);
+    --red:#dc2626; --red-soft:rgba(220,38,38,.10);
+    --blue:#2563eb; --blue-soft:rgba(37,99,235,.10);
+    --amber:#b45309; --amber-soft:rgba(180,83,9,.12);
+    --r:16px; --r-sm:11px;
+    --shadow:0 1px 2px rgba(24,12,54,.05), 0 12px 24px -16px rgba(24,12,54,.14);
+    --display:"Fraunces",Georgia,serif; --ui:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    --glass-side:rgba(255,255,255,.75); --glass-top:rgba(255,255,255,.82); --glass-tabs:rgba(255,255,255,.92);
+    --hover-tint:rgba(24,12,54,.035);
+    --glow1:rgba(91,30,201,.09); --glow2:rgba(200,30,142,.07);
+  }
+  :root[data-theme="dark"]{
     --bg:#0c0a14; --bg2:#110d1c; --surface:#181327; --surface-2:#211a3a;
     --line:rgba(255,255,255,.085); --line-soft:rgba(255,255,255,.05);
     --text:#ECE9F5; --muted:#9a93b5; --muted-2:#6f6890;
-    --b1:#5418c4; --b2:#8a17b3; --b3:#c81e8e;
-    --accent:#a21bca; --accent-2:#c81e8e; --accent-soft:rgba(162,27,202,.16);
-    --grad:linear-gradient(120deg,#5b1ec9 0%,#8e1bb0 48%,#c81e8e 100%);
+    --accent-soft:rgba(162,27,202,.16);
     --green:#34d399; --green-soft:rgba(52,211,153,.15);
     --red:#fb7185; --red-soft:rgba(251,113,133,.15);
     --blue:#60a5fa; --blue-soft:rgba(96,165,250,.15);
     --amber:#fbbf24; --amber-soft:rgba(251,191,36,.15);
-    --r:16px; --r-sm:11px;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px -16px rgba(0,0,0,.7);
-    --display:"Fraunces",Georgia,serif; --ui:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    --glass-side:rgba(17,13,28,.7); --glass-top:rgba(12,10,20,.82); --glass-tabs:rgba(17,13,28,.96);
+    --hover-tint:rgba(255,255,255,.025);
+    --glow1:rgba(91,30,201,.20); --glow2:rgba(200,30,142,.14);
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{font-family:var(--ui); color:var(--text); background:var(--bg); -webkit-font-smoothing:antialiased; font-size:14px; line-height:1.45}
   body::before{content:"";position:fixed;inset:0;z-index:-1;background:
-    radial-gradient(900px 500px at 12% -8%, rgba(91,30,201,.20), transparent 60%),
-    radial-gradient(800px 500px at 100% 0%, rgba(200,30,142,.14), transparent 55%); pointer-events:none}
+    radial-gradient(900px 500px at 12% -8%, var(--glow1), transparent 60%),
+    radial-gradient(800px 500px at 100% 0%, var(--glow2), transparent 55%); pointer-events:none}
   .num{font-variant-numeric:tabular-nums; font-feature-settings:"tnum" 1}
   button{font-family:inherit; cursor:pointer; border:none; background:none; color:inherit}
   input,select,textarea{font-family:inherit; font-size:14px; color:var(--text)}
@@ -41,7 +58,7 @@
   .grad-text{background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent}
 
   .app{display:grid; grid-template-columns:236px 1fr; min-height:100vh}
-  .side{border-right:1px solid var(--line); background:rgba(17,13,28,.7); backdrop-filter:blur(10px); padding:18px 14px; position:sticky; top:0; height:100vh; display:flex; flex-direction:column; gap:3px}
+  .side{border-right:1px solid var(--line); background:var(--glass-side); backdrop-filter:blur(10px); padding:18px 14px; position:sticky; top:0; height:100vh; display:flex; flex-direction:column; gap:3px}
   .brand{padding:6px 8px 16px}
   .brand img{width:100%; height:auto; display:block; background:#fff; border-radius:12px; padding:10px 12px; box-shadow:0 2px 14px rgba(162,27,202,.28)}
   .brand .tag{font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted-2); margin-top:8px; font-weight:600}
@@ -55,7 +72,7 @@
   .side .foot{font-size:11px; color:var(--muted-2); padding:10px 8px; border-top:1px solid var(--line-soft); line-height:1.5}
 
   .main{min-width:0; display:flex; flex-direction:column}
-  .topbar{position:sticky; top:0; z-index:20; background:rgba(12,10,20,.82); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); padding:14px 26px}
+  .topbar{position:sticky; top:0; z-index:20; background:var(--glass-top); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); padding:14px 26px}
   .topbar-row{display:flex; align-items:center; gap:18px; flex-wrap:wrap}
   .page-title{font-family:var(--display); font-size:25px; font-weight:600; letter-spacing:-.02em; line-height:1.1}
   .page-sub{color:var(--muted); font-size:12.5px; margin-top:2px}
@@ -104,7 +121,7 @@
   table{width:100%; border-collapse:collapse}
   th{text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted-2); font-weight:600; padding:0 12px 9px}
   td{padding:11px 12px; border-top:1px solid var(--line-soft); font-size:13px; vertical-align:middle}
-  tr.row:hover td{background:rgba(255,255,255,.025)}
+  tr.row:hover td{background:var(--hover-tint)}
   .t-amt{text-align:right; font-weight:600}
   .t-acct{font-size:11.5px; color:var(--muted)}
   .chip{font-size:11px; padding:3px 9px; border-radius:999px; font-weight:600}
@@ -188,7 +205,7 @@
     .two{grid-template-columns:1fr}
     .topbar{padding:12px 14px}
     .row2,.row3,.acct-pick{grid-template-columns:1fr}
-    .mobile-tabs{display:flex; position:fixed; bottom:0; left:0; right:0; z-index:50; background:rgba(17,13,28,.96); backdrop-filter:blur(10px); border-top:1px solid var(--line); padding:6px 6px calc(8px + env(safe-area-inset-bottom)); overflow-x:auto}
+    .mobile-tabs{display:flex; position:fixed; bottom:0; left:0; right:0; z-index:50; background:var(--glass-tabs); backdrop-filter:blur(10px); border-top:1px solid var(--line); padding:6px 6px calc(8px + env(safe-area-inset-bottom)); overflow-x:auto}
     .mobile-tabs button{display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--muted); font-size:10px; font-weight:600; padding:5px 11px; border-radius:10px; flex:none}
     .mobile-tabs button svg{width:20px;height:20px}
     .mobile-tabs button.on{color:#fff}
@@ -277,6 +294,7 @@
   @media print{#overlay{position:static!important;background:#fff!important;display:block!important}.modal{box-shadow:none!important;border:none!important;max-width:100%!important;width:100%!important;border-radius:0!important}.mh,.mf{display:none!important}.mb{padding:0!important;max-height:none!important;overflow:visible!important}}
   @media print{.side,.topbar,.mobile-tabs,.no-print{display:none!important} .content{padding:0} body{background:#fff;color:#000}}
 </style>
+<script>(function(){try{var t=localStorage.getItem("incinc_theme");if(t==="dark")document.documentElement.setAttribute("data-theme","dark")}catch(e){}})();</script>
 
 <div class="app">
   <aside class="side">
@@ -301,6 +319,7 @@
           <button class="btn red" data-action="addExpense">－ Expense</button>
           <button class="btn ghost" data-action="transfer" title="Internal transfer">⇄ Transfer</button>
           <button class="btn ghost" data-action="globalSearch" title="Search everything (Ctrl+K)">🔍 Search</button>
+          <button class="x" id="themeBtn" data-action="toggleTheme" title="Switch theme"></button>
         </div>
       </div>
       <div class="band" id="band"></div>
@@ -320,7 +339,7 @@ const KEY = "incinccrm:v1";
 
 /* ---- PWA: manifest + apple icon (so it installs nicely once hosted) ---- */
 try{
-  const mani={name:"Incinc CRM",short_name:"Incinc",start_url:".",scope:".",display:"standalone",orientation:"portrait",background_color:"#0c0a14",theme_color:"#0c0a14",icons:[{src:ICON,sizes:"384x384",type:"image/png",purpose:"any maskable"},{src:ICON,sizes:"512x512",type:"image/png"}]};
+  const mani={name:"Incinc CRM",short_name:"Incinc",start_url:".",scope:".",display:"standalone",orientation:"portrait",background_color:"#f8f7fb",theme_color:"#f8f7fb",icons:[{src:ICON,sizes:"384x384",type:"image/png",purpose:"any maskable"},{src:ICON,sizes:"512x512",type:"image/png"}]};
   const ml=document.createElement("link"); ml.rel="manifest";
   ml.href=URL.createObjectURL(new Blob([JSON.stringify(mani)],{type:"application/manifest+json"})); document.head.appendChild(ml);
   const al=document.createElement("link"); al.rel="apple-touch-icon"; al.href=ICON; document.head.appendChild(al);
@@ -355,6 +374,17 @@ const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",
 let state=null, toastTimer=null, attDraft=null, pendingImport=null;
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),2300)}
 async function save(){state._ts=Date.now();await store.set(JSON.stringify(state));queueCloudPush()}
+
+/* ---- theme ---- */
+function currentTheme(){return document.documentElement.getAttribute("data-theme")==="dark"?"dark":"light"}
+function applyTheme(t){
+  if(t==="dark")document.documentElement.setAttribute("data-theme","dark");else document.documentElement.removeAttribute("data-theme");
+  try{localStorage.setItem("incinc_theme",t)}catch(e){}
+  const c=getComputedStyle(document.documentElement).getPropertyValue("--bg").trim();
+  const meta=$("#themeColorMeta");if(meta)meta.setAttribute("content",c||(t==="dark"?"#0c0a14":"#f8f7fb"));
+  const b=$("#themeBtn");if(b){b.innerHTML=t==="dark"?I.sun:I.moon;b.title=t==="dark"?"Switch to light theme":"Switch to dark theme"}
+}
+function toggleTheme(){applyTheme(currentTheme()==="dark"?"light":"dark")}
 
 /* ---- data dictionaries ---- */
 const PERSONAL_CATS=["Food","Groceries","Shopping","Petrol","Travel","Medical","Entertainment","Family","Personal Investment","Subscriptions","Other"];
@@ -513,6 +543,8 @@ const I={
   edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
   trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>',
   settings:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1A1.6 1.6 0 0 0 7 19.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H3a2 2 0 1 1 0-4h.1A1.6 1.6 0 0 0 4.7 7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9.4A1.6 1.6 0 0 0 10.5 3V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8v.1A1.6 1.6 0 0 0 21 10.5h.1a2 2 0 1 1 0 4H21a1.6 1.6 0 0 0-1.6 1.1z"/></svg>',
+  sun:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v3M12 18.5v3M4.5 12h-3M22.5 12h-3M6 6l-2-2M20 20l-2-2M6 18l-2 2M20 4l-2 2"/></svg>',
+  moon:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></svg>',
 };
 const NAV=[
   {id:"dashboard",label:"Dashboard",icon:I.dashboard},
@@ -1058,6 +1090,7 @@ function globalSearchModal(){
 async function handleAction(action,ds){
   switch(action){
     case "go": state.view=ds.view; state.openClient=null; await save(); render(); break;
+    case "toggleTheme": toggleTheme(); break;
     case "addExpense": expenseForm(); break;
     case "addIncome": incomeForm(); break;
     case "transfer": transferForm(); break;
@@ -1227,6 +1260,7 @@ document.addEventListener("change",e=>{
     if(res.ok&&res.row&&res.row.data&&(res.row.data._ts||0)>(state._ts||0)){state=res.row.data;await store.set(JSON.stringify(state))}
     else if(res.ok){queueCloudPush()}
   }
+  applyTheme(currentTheme());
   render();
   setInterval(async()=>{
     if(document.hidden||!syncCfg())return;

@@ -61,7 +61,7 @@
   .page-sub{color:var(--muted); font-size:12.5px; margin-top:2px}
   .top-actions{margin-left:auto; display:flex; gap:8px; align-items:center; flex-wrap:wrap}
 
-  .band{display:flex; margin-top:14px; border:1px solid var(--line); border-radius:var(--r); overflow:hidden; background:var(--surface)}
+  .band{display:flex; margin-top:14px; border:1px solid var(--line); border-radius:var(--r); overflow:hidden; background:var(--surface); position:relative}
   .band .net{padding:13px 18px; background:var(--grad); color:#fff; flex:none; min-width:180px; display:flex; flex-direction:column; justify-content:center}
   .band .net .lbl{font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.82)}
   .band .net .val{font-family:var(--display); font-size:26px; font-weight:600; margin-top:2px}
@@ -72,7 +72,7 @@
   .band .acct .nm{font-size:11.5px; color:var(--muted); font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .band .acct .bal{font-family:var(--display); font-size:18px; font-weight:600}
 
-  .btn{display:inline-flex; align-items:center; gap:7px; padding:9px 14px; border-radius:11px; font-weight:600; font-size:13px; border:1px solid var(--line); background:var(--surface); color:var(--text); transition:.1s; white-space:nowrap}
+  .btn{display:inline-flex; align-items:center; gap:7px; padding:9px 14px; border-radius:11px; font-weight:600; font-size:13px; border:1px solid var(--line); background:var(--surface); color:var(--text); transition:.1s; white-space:nowrap; vertical-align:middle}
   .btn:hover{background:var(--surface-2)}
   .btn:active{transform:translateY(1px)}
   .btn.primary{background:var(--grad); color:#fff; border:none}
@@ -81,7 +81,7 @@
   .btn.red{background:var(--red); color:#3a0d16; border:none}
   .btn.ghost{background:transparent}
   .btn.sm{padding:6px 10px; font-size:12px; border-radius:9px}
-  .x{width:32px; height:32px; border-radius:9px; display:grid; place-items:center; color:var(--muted)}
+  .x{width:32px; height:32px; border-radius:9px; display:inline-grid; place-items:center; color:var(--muted); vertical-align:middle}
   .x:hover{background:var(--surface-2)}
 
   .content{padding:22px 26px 110px; max-width:1180px; width:100%}
@@ -194,9 +194,12 @@
     .mobile-tabs button.on{color:#fff}
     .mobile-tabs button.on svg{color:var(--accent-2)}
     .mtop-logo{height:26px}
+    .band::after{content:"";position:absolute;top:0;right:0;bottom:0;width:26px;background:linear-gradient(90deg,transparent,var(--surface));pointer-events:none}
+    .tbl-tx th:nth-child(3),.tbl-tx td:nth-child(3){display:none}
   }
   .x svg{width:16px;height:16px}
   .segbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;width:fit-content;max-width:100%}
+  @media (max-width:880px){.segbar{flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch}}
   .seg{padding:7px 13px;border-radius:9px;font-size:12.5px;font-weight:600;color:var(--muted);white-space:nowrap}
   .seg:hover{color:var(--text)}
   .seg.on{background:var(--accent-soft);color:#fff}
@@ -557,9 +560,9 @@ function barsIE(months){
     bars+=`<text x="${x+bw/2}" y="${pad+h+16}" text-anchor="middle" style="font-size:10px;fill:var(--muted)">${m.label}</text>`});
   return `<svg viewBox="0 0 ${w} ${h+pad+24}" width="100%" style="max-width:${w}px">${bars}</svg><div style="display:flex;gap:16px;margin-top:6px;font-size:11.5px;color:var(--muted)"><span style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:2px;background:var(--green)"></span>Income</span><span style="display:flex;align-items:center;gap:6px"><span style="width:9px;height:9px;border-radius:2px;background:var(--red)"></span>Expense</span></div>`;
 }
-function hbars(rows){
+function hbars(rows,plain){
   const max=Math.max(1,...rows.map(r=>r.value));
-  return rows.map(r=>`<div style="margin:9px 0"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--muted)">${esc(r.label)}</span><span class="num" style="font-weight:600">${fmtINR(r.value)}</span></div><div style="height:8px;background:var(--line-soft);border-radius:4px;overflow:hidden"><div style="height:100%;width:${r.value/max*100}%;background:${r.color||"var(--accent)"};border-radius:4px"></div></div></div>`).join("");
+  return rows.map(r=>`<div style="margin:9px 0"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--muted)">${esc(r.label)}</span><span class="num" style="font-weight:600">${plain?r.value:fmtINR(r.value)}</span></div><div style="height:8px;background:var(--line-soft);border-radius:4px;overflow:hidden"><div style="height:100%;width:${r.value/max*100}%;background:${r.color||"var(--accent)"};border-radius:4px"></div></div></div>`).join("");
 }
 
 /* ---- views ---- */
@@ -622,7 +625,7 @@ function vDashboard(){
 
 function txTable(list,compact){
   if(!list.length)return `<div class="empty"><div class="big">No transactions yet</div>Add an income or expense to get started.</div>`;
-  return `<table><thead><tr><th>Date</th><th>Details</th><th>Account</th><th style="text-align:right">Amount</th>${compact?"":"<th></th>"}</tr></thead><tbody>${list.map(t=>{
+  return `<table class="tbl-tx"><thead><tr><th>Date</th><th>Details</th><th>Account</th><th style="text-align:right">Amount</th>${compact?"":"<th></th>"}</tr></thead><tbody>${list.map(t=>{
     let amt,label,sub;
     if(t.type==="income"){amt=`<span style="color:var(--green)">+${fmtINR(t.amount)}</span>`;label=t.client?esc(t.client):esc(t.source||"Income");sub=`${esc(t.source||"")}${t.service?" · "+esc(t.service):""}`}
     else if(t.type==="expense"){amt=`<span style="color:var(--red)">−${fmtINR(t.amount)}</span>`;label=esc(t.category);sub=esc(t.sub||t.desc||"")}
@@ -850,7 +853,7 @@ function vReports(){
     <div class="grid two" style="margin-top:14px"><div class="card chart-card"><h4>Expense by category</h4>${catRows.length?hbars(catRows):'<div class="empty">No data</div>'}</div><div class="card chart-card"><h4>Revenue by client</h4>${cliRows.length?hbars(cliRows):'<div class="empty">No data</div>'}</div></div>
     <div class="grid two" style="margin-top:14px"><div class="card chart-card"><h4>Revenue by service</h4>${svcRows.length?hbars(svcRows):'<div class="empty">No data</div>'}</div><div class="card chart-card"><h4>GST summary</h4>${hbars([{label:"GST collected (paid)",value:gstC,color:"var(--green)"},{label:"GST pending",value:gstD,color:"var(--amber)"}])}<div style="font-size:11.5px;color:var(--muted);margin-top:8px">Output GST ≈ ${fmtINR(gstC)}. File before the 20th.</div></div></div>
     <div class="section-head"><span class="eyebrow">Leads & conversion</span></div>
-    <div class="grid two"><div class="card chart-card"><h4>Leads by source</h4>${(()=>{const m={};(state.leads||[]).forEach(l=>m[l.source||"Other"]=(m[l.source||"Other"]||0)+1);const rows=Object.entries(m).sort((a,b)=>b[1]-a[1]).map(([l,v],i)=>({label:l+" ("+v+")",value:v,color:PALETTE[i%PALETTE.length]}));return rows.length?hbars(rows):'<div class="empty">No leads yet</div>'})()}</div><div class="card chart-card"><h4>Pipeline by stage</h4>${(()=>{const rows=LEAD_STATUS.map((s,i)=>({label:LEAD_STATUS_LABEL[s],value:(state.leads||[]).filter(l=>l.status===s).length,color:PALETTE[i%PALETTE.length]})).filter(r=>r.value);const won=(state.leads||[]).filter(l=>l.status==="won").length,tot=(state.leads||[]).length;return (rows.length?rows.map(r=>`<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:5px 0;border-bottom:1px solid var(--line-soft)"><span style="color:var(--muted)">${r.label}</span><b class="num">${r.value}</b></div>`).join(""):'<div class="empty">No leads yet</div>')+`<div style="margin-top:10px;font-size:12.5px;color:var(--muted)">Conversion rate: <b style="color:var(--green)">${tot?Math.round(won/tot*100):0}%</b> (${won} won of ${tot})</div>`})()}</div></div>
+    <div class="grid two"><div class="card chart-card"><h4>Leads by source</h4>${(()=>{const m={};(state.leads||[]).forEach(l=>m[l.source||"Other"]=(m[l.source||"Other"]||0)+1);const rows=Object.entries(m).sort((a,b)=>b[1]-a[1]).map(([l,v],i)=>({label:l+" ("+v+")",value:v,color:PALETTE[i%PALETTE.length]}));return rows.length?hbars(rows,true):'<div class="empty">No leads yet</div>'})()}</div><div class="card chart-card"><h4>Pipeline by stage</h4>${(()=>{const rows=LEAD_STATUS.map((s,i)=>({label:LEAD_STATUS_LABEL[s],value:(state.leads||[]).filter(l=>l.status===s).length,color:PALETTE[i%PALETTE.length]})).filter(r=>r.value);const won=(state.leads||[]).filter(l=>l.status==="won").length,tot=(state.leads||[]).length;return (rows.length?rows.map(r=>`<div style="display:flex;justify-content:space-between;font-size:12.5px;padding:5px 0;border-bottom:1px solid var(--line-soft)"><span style="color:var(--muted)">${r.label}</span><b class="num">${r.value}</b></div>`).join(""):'<div class="empty">No leads yet</div>')+`<div style="margin-top:10px;font-size:12.5px;color:var(--muted)">Conversion rate: <b style="color:var(--green)">${tot?Math.round(won/tot*100):0}%</b> (${won} won of ${tot})</div>`})()}</div></div>
     <div class="section-head"><span class="eyebrow no-print">Data</span></div>
     <div class="card no-print" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><button class="btn" data-action="exportJSON">⬇ Backup (JSON)</button><button class="btn" data-action="exportCSV">⬇ Ledger (CSV)</button><button class="btn" data-action="exportClientsCSV">⬇ Clients (CSV)</button><button class="btn" data-action="exportLeadsCSV">⬇ Leads (CSV)</button><button class="btn ghost" data-action="reset" style="margin-left:auto;color:var(--red)">Reset all data</button></div>`;
 }

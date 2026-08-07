@@ -45,7 +45,7 @@
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
-  body{font-family:var(--ui); color:var(--text); background:var(--bg); -webkit-font-smoothing:antialiased; font-size:14px; line-height:1.45}
+  body{font-family:var(--ui); color:var(--text); background:var(--bg); -webkit-font-smoothing:antialiased; font-size:14px; line-height:1.45; overflow-x:hidden}
   body::before{content:"";position:fixed;inset:0;z-index:-1;background:
     radial-gradient(900px 500px at 12% -8%, var(--glow1), transparent 60%),
     radial-gradient(800px 500px at 100% 0%, var(--glow2), transparent 55%); pointer-events:none}
@@ -213,6 +213,11 @@
     .mtop-logo{height:26px}
     .band::after{content:"";position:absolute;top:0;right:0;bottom:0;width:26px;background:linear-gradient(90deg,transparent,var(--surface));pointer-events:none}
     .tbl-tx th:nth-child(3),.tbl-tx td:nth-child(3){display:none}
+    .card:has(table){overflow-x:auto; -webkit-overflow-scrolling:touch}
+    .card:has(table) table{min-width:560px}
+    .card:has(.tbl-tx){overflow-x:visible}
+    .card:has(.tbl-tx) .tbl-tx{min-width:0}
+    .modal .mb{overflow-x:auto; -webkit-overflow-scrolling:touch}
   }
   .x svg{width:16px;height:16px}
   .segbar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;width:fit-content;max-width:100%}
@@ -986,8 +991,8 @@ function vSettings(){
   <div class="section-head"><span class="eyebrow no-print">Cloud sync</span></div>
   <div class="card no-print" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
     <div style="flex:1;min-width:220px">
-      <div style="font-weight:600">${syncCfg()?"☁ Connected — data cloud me save ho raha hai":"Data abhi sirf is browser me hai"}</div>
-      <div style="font-size:11.5px;color:var(--muted);margin-top:3px">${syncCfg()?`Workspace: <b>${esc((syncCfg()||{}).room||"")}</b> · har change auto-sync hota hai · doosre device pe same URL/key/workspace daalo`:"Free Supabase database connect karo — phone aur laptop pe same data, kabhi delete nahi hoga."}</div>
+      <div style="font-weight:600">${syncCfg()?"☁ Connected — data is syncing to the cloud":"Data is currently only in this browser"}</div>
+      <div style="font-size:11.5px;color:var(--muted);margin-top:3px">${syncCfg()?`Workspace: <b>${esc((syncCfg()||{}).room||"")}</b> · every change auto-syncs · use the same URL/key/workspace on other devices`:"Connect a free Supabase database — same data on phone and laptop, never lost."}</div>
     </div>
     ${syncCfg()?`<button class="btn" data-action="syncNow">⟳ Sync now</button>`:""}
     <button class="btn primary" data-action="cloudSetup">${syncCfg()?"Sync settings":"⚡ Set up cloud sync"}</button>
@@ -1055,15 +1060,15 @@ function syncForm(){
   const c=syncCfg()||{};
   openModal(`<div class="mh"><h3>Cloud sync setup</h3><button class="x" data-action="closeModal">✕</button></div><div class="mb">
     <div style="font-size:12.5px;color:var(--muted);line-height:1.7;margin-bottom:14px;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:12px 14px">
-      Free <b style="color:var(--text)">Supabase</b> database se saara data cloud me save hota hai — phone, laptop, sab jagah same data.<br>
+      Your data auto-saves to a free <b style="color:var(--text)">Supabase</b> database — same data on phone, laptop, everywhere.<br>
       <b style="color:var(--text)">One-time setup (~3 min):</b><br>
-      1&nbsp;·&nbsp;<a href="https://supabase.com" target="_blank" rel="noopener" style="color:var(--accent-2)">supabase.com</a> pe free account banao → <b>New project</b><br>
-      2&nbsp;·&nbsp;Left menu → <b>SQL Editor</b> → SQL paste karke <b>Run</b> karo → <button class="btn sm" data-action="copySyncSQL" style="vertical-align:middle">⎘ Copy SQL</button><br>
-      3&nbsp;·&nbsp;<b>Project Settings → API</b> → Project URL &amp; anon public key neeche paste karo
+      1&nbsp;·&nbsp;Create a free account at <a href="https://supabase.com" target="_blank" rel="noopener" style="color:var(--accent-2)">supabase.com</a> → <b>New project</b><br>
+      2&nbsp;·&nbsp;Left menu → <b>SQL Editor</b> → paste the SQL and hit <b>Run</b> → <button class="btn sm" data-action="copySyncSQL" style="vertical-align:middle">⎘ Copy SQL</button><br>
+      3&nbsp;·&nbsp;<b>Project Settings → API</b> → paste the Project URL &amp; anon public key below
     </div>
     <div class="field"><label>Supabase Project URL</label><input id="s_url" placeholder="https://xxxx.supabase.co" value="${esc(c.url||"")}"></div>
     <div class="field"><label>Anon public key</label><input id="s_key" placeholder="eyJhbGciOi…" value="${esc(c.key||"")}"></div>
-    <div class="field"><label>Workspace name (har device pe SAME rakhna)</label><input id="s_room" value="${esc(c.room||"incinc-main")}"></div>
+    <div class="field"><label>Workspace name (keep this SAME on every device)</label><input id="s_room" value="${esc(c.room||"incinc-main")}"></div>
   </div><div class="mf">${c.url?`<button class="btn red" data-action="syncOff">Disconnect</button>`:""}<button class="btn" data-action="closeModal">Cancel</button><button class="btn primary" data-action="saveSync">Connect &amp; sync</button></div>`);
 }
 
@@ -1183,24 +1188,24 @@ async function handleAction(action,ds){
     case "copySyncSQL": copyText(SYNC_SQL); break;
     case "saveSync":{
       const url=$("#s_url").value.trim().replace(/\/+$/,""),key=$("#s_key").value.trim(),room=($("#s_room").value.trim()||"incinc-main");
-      if(!url||!key){toast("URL aur key dono daalo");break}
+      if(!url||!key){toast("Enter both the URL and key");break}
       setSyncCfg({url,key,room});
       const res=await cloudPull();
-      if(!res.ok){setSyncCfg(null);syncStatus="off";toast(res.code===404||res.code===406?"Table nahi mili — pehle SQL run karo":"Connect nahi hua — URL/key check karo");break}
+      if(!res.ok){setSyncCfg(null);syncStatus="off";toast(res.code===404||res.code===406?"Table not found — run the SQL first":"Couldn't connect — check the URL/key");break}
       if(res.row&&res.row.data&&res.row.data.transactions){
-        openModal(`<div class="mh"><h3>Cloud me pehle se data hai</h3><button class="x" data-action="closeModal">✕</button></div><div class="mb">Workspace <b>${esc(room)}</b> me pehle se data mila. Kaunsa rakhna hai?<div style="font-size:11.5px;color:var(--muted);margin-top:8px">Doosra option chunne se cloud wala data is device ke data se replace ho jayega.</div></div><div class="mf"><button class="btn" data-action="syncKeepLocal">Is device ka data rakho</button><button class="btn primary" data-action="syncUseCloud">Cloud ka data lo</button></div>`);
+        openModal(`<div class="mh"><h3>Cloud already has data</h3><button class="x" data-action="closeModal">✕</button></div><div class="mb">Workspace <b>${esc(room)}</b> already has data saved. Which copy do you want to keep?<div style="font-size:11.5px;color:var(--muted);margin-top:8px">Choosing the other option replaces this device's data with the cloud copy.</div></div><div class="mf"><button class="btn" data-action="syncKeepLocal">Keep this device's data</button><button class="btn primary" data-action="syncUseCloud">Use cloud data</button></div>`);
       }else{
         const okp=await cloudPush();
-        closeModal();render();toast(okp?"Cloud sync on ✓":"Push fail hua — dubara try karo");
+        closeModal();render();toast(okp?"Cloud sync on ✓":"Push failed — try again");
       }
       break}
-    case "syncUseCloud":{const res=await cloudPull();if(res.ok&&res.row&&res.row.data){state=res.row.data;await store.set(JSON.stringify(state));syncStatus="ok"}closeModal();render();toast("Cloud ka data load ho gaya ✓");break}
-    case "syncKeepLocal":{await cloudPush();closeModal();render();toast("Cloud sync on ✓ — is device ka data cloud me save ho gaya");break}
-    case "syncOff":{setSyncCfg(null);syncStatus="off";closeModal();render();toast("Cloud sync band — data ab sirf is browser me");break}
+    case "syncUseCloud":{const res=await cloudPull();if(res.ok&&res.row&&res.row.data){state=res.row.data;await store.set(JSON.stringify(state));syncStatus="ok"}closeModal();render();toast("Cloud data loaded ✓");break}
+    case "syncKeepLocal":{await cloudPush();closeModal();render();toast("Cloud sync on ✓ — this device's data is now saved to the cloud");break}
+    case "syncOff":{setSyncCfg(null);syncStatus="off";closeModal();render();toast("Cloud sync off — data is now only in this browser");break}
     case "syncNow":{
       const res=await cloudPull();
-      if(res.ok&&res.row&&res.row.data&&(res.row.data._ts||0)>(state._ts||0)){state=res.row.data;await store.set(JSON.stringify(state));render();toast("Cloud se naya data mila ✓")}
-      else{const okp=await cloudPush();render();toast(okp?"Synced ✓":"Sync fail — connection check karo")}
+      if(res.ok&&res.row&&res.row.data&&(res.row.data._ts||0)>(state._ts||0)){state=res.row.data;await store.set(JSON.stringify(state));render();toast("New data found in the cloud ✓")}
+      else{const okp=await cloudPush();render();toast(okp?"Synced ✓":"Sync failed — check your connection")}
       break}
 
     /* ---- add-ons ---- */

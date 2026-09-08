@@ -43,6 +43,11 @@
     --hover-tint:rgba(255,255,255,.025);
     --glow1:rgba(91,30,201,.20); --glow2:rgba(200,30,142,.14);
   }
+  [data-theme="dark"] .nav button.on,
+  [data-theme="dark"] .seg.on,
+  [data-theme="dark"] .statusbtns .sb.on{color:#fff}
+  [data-theme="dark"] .seg.on .segn{background:rgba(255,255,255,.18);color:#fff}
+  [data-theme="dark"] .chip.completed{color:#d6a8ea}
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{font-family:var(--ui); color:var(--text); background:var(--bg); -webkit-font-smoothing:antialiased; font-size:14px; line-height:1.45; overflow-x:hidden}
@@ -66,7 +71,7 @@
   .nav button{display:flex; align-items:center; gap:11px; width:100%; text-align:left; padding:9px 11px; border-radius:var(--r-sm); color:var(--muted); font-weight:500; font-size:13.5px; transition:.13s}
   .nav button svg{width:18px; height:18px; flex:none; opacity:.8}
   .nav button:hover{background:var(--surface-2); color:var(--text)}
-  .nav button.on{background:var(--accent-soft); color:#fff}
+  .nav button.on{background:var(--accent-soft); color:var(--accent-2)}
   .nav button.on svg{opacity:1; color:var(--accent-2)}
   .side .spacer{flex:1}
   .side .foot{font-size:11px; color:var(--muted-2); padding:10px 8px; border-top:1px solid var(--line-soft); line-height:1.5}
@@ -130,7 +135,7 @@
   .chip.overdue,.chip.lost{background:var(--red-soft); color:var(--red)}
   .chip.partial{background:var(--blue-soft); color:var(--blue)}
   .chip.inactive{background:var(--surface-2); color:var(--muted)}
-  .chip.completed{background:var(--accent-soft); color:#d6a8ea}
+  .chip.completed{background:var(--accent-soft); color:var(--accent-2)}
 
   .empty{padding:38px 20px; text-align:center; color:var(--muted)}
   .empty .big{font-family:var(--display); font-size:18px; color:var(--text); margin-bottom:4px}
@@ -165,7 +170,7 @@
   .acct-opt .ainfo{flex:1;min-width:0}
   .acct-opt .an{font-size:12.5px;font-weight:600} .acct-opt .ab{font-size:11px;color:var(--muted)}
 
-  .toast{position:fixed; bottom:84px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--surface-2); border:1px solid var(--line); color:#fff; padding:11px 18px; border-radius:12px; font-size:13px; font-weight:500; z-index:200; opacity:0; transition:.25s; box-shadow:var(--shadow); pointer-events:none}
+  .toast{position:fixed; bottom:84px; left:50%; transform:translateX(-50%) translateY(20px); background:#211a3a; border:1px solid var(--line); color:#fff; padding:11px 18px; border-radius:12px; font-size:13px; font-weight:500; z-index:200; opacity:0; transition:.25s; box-shadow:var(--shadow); pointer-events:none}
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
 
   /* attendance grid */
@@ -208,7 +213,7 @@
     .mobile-tabs{display:flex; position:fixed; bottom:0; left:0; right:0; z-index:50; background:var(--glass-tabs); backdrop-filter:blur(10px); border-top:1px solid var(--line); padding:6px 6px calc(8px + env(safe-area-inset-bottom)); overflow-x:auto}
     .mobile-tabs button{display:flex; flex-direction:column; align-items:center; gap:3px; color:var(--muted); font-size:10px; font-weight:600; padding:5px 11px; border-radius:10px; flex:none}
     .mobile-tabs button svg{width:20px;height:20px}
-    .mobile-tabs button.on{color:#fff}
+    .mobile-tabs button.on{color:var(--text)}
     .mobile-tabs button.on svg{color:var(--accent-2)}
     .mtop-logo{height:26px}
     .band::after{content:"";position:absolute;top:0;right:0;bottom:0;width:26px;background:linear-gradient(90deg,transparent,var(--surface));pointer-events:none}
@@ -224,9 +229,9 @@
   @media (max-width:880px){.segbar{flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch}}
   .seg{padding:7px 13px;border-radius:9px;font-size:12.5px;font-weight:600;color:var(--muted);white-space:nowrap}
   .seg:hover{color:var(--text)}
-  .seg.on{background:var(--accent-soft);color:#fff}
+  .seg.on{background:var(--accent-soft);color:var(--accent-2)}
   .segn{font-size:10.5px;background:var(--surface-2);color:var(--muted);padding:1px 6px;border-radius:999px;margin-left:3px}
-  .seg.on .segn{background:rgba(255,255,255,.18);color:#fff}
+  .seg.on .segn{background:rgba(162,27,202,.16);color:var(--accent-2)}
   .tline{position:relative;padding-left:22px}
   .tline::before{content:"";position:absolute;left:6px;top:4px;bottom:4px;width:2px;background:var(--line)}
   .titem{position:relative;padding:0 0 16px}
@@ -237,7 +242,7 @@
   .titem .tr{font-size:12.5px;color:var(--muted);margin-top:3px;padding:7px 10px;background:var(--bg2);border-radius:9px}
   .statusbtns{display:flex;gap:5px;flex-wrap:wrap}
   .statusbtns .sb{padding:5px 10px;border-radius:8px;font-size:11.5px;font-weight:600;border:1px solid var(--line);background:var(--bg2);color:var(--muted)}
-  .statusbtns .sb.on{background:var(--accent-soft);color:#fff;border-color:transparent}
+  .statusbtns .sb.on{background:var(--accent-soft);color:var(--accent-2);border-color:transparent}
   .hero{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;background:linear-gradient(120deg,rgba(91,30,201,.20),rgba(200,30,142,.14));border:1px solid var(--line);border-radius:18px;padding:18px 22px;margin-bottom:16px}
   .hero .hgreet{font-family:var(--display);font-size:22px;font-weight:600}
   .hero .hsub{font-size:12.5px;color:var(--muted);margin-top:2px}
